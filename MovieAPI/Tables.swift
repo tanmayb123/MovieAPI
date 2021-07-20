@@ -28,3 +28,11 @@ public struct MovieGenreLink: Codable {
     
     var name: String
 }
+
+public struct MovieProductionCompanyLink: Codable {
+    enum CodingKeys: String, CodingKey {
+        case name = "NAME"
+    }
+    
+    var name: String
+}

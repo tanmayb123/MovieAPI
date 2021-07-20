@@ -40,6 +40,11 @@ struct GenresResponse: Codable {
     var error: String?
 }
 
+struct ProductionCompaniesResponse: Codable {
+    var productionCompanies: [String]
+    var error: String?
+}
+
 func registerVaporEndpoints(application: Application) {
     application.getAsync("register") { req async throws -> String in
         let handler: Db2Handler
@@ -121,6 +126,34 @@ func registerVaporEndpoints(application: Application) {
             }
             
             return GenresResponse(genres: genres, error: nil)
+        }()
+        
+        return String(data: try JSONEncoder().encode(response), encoding: .utf8)!
+    }
+    
+    application.getAsync("productionCompanies", ":movieID") { req async throws -> String in
+        let response = try await { () async throws -> ProductionCompaniesResponse in
+            guard let movieIDString = req.parameters.get("movieID") else {
+                return ProductionCompaniesResponse(productionCompanies: [], error: "No movie ID given")
+            }
+            guard let movieID = Int(movieIDString) else {
+                return ProductionCompaniesResponse(productionCompanies: [], error: "Invalid movie ID")
+            }
+            guard let sessionId = req.query[String.self, at: "session"] else {
+                return ProductionCompaniesResponse(productionCompanies: [], error: "No session ID")
+            }
+            guard let session = await Sessions.shared.session(with: sessionId) else {
+                return ProductionCompaniesResponse(productionCompanies: [], error: "Invalid session ID")
+            }
+            
+            guard let movie = try await session.movie(by: movieID) else {
+                return ProductionCompaniesResponse(productionCompanies: [], error: "Non-existent movie ID")
+            }
+            guard let productionCompanies = try await session.productionCompanies(for: movie) else {
+                return ProductionCompaniesResponse(productionCompanies: [], error: "Invalid response from Db2")
+            }
+            
+            return ProductionCompaniesResponse(productionCompanies: productionCompanies, error: nil)
         }()
         
         return String(data: try JSONEncoder().encode(response), encoding: .utf8)!

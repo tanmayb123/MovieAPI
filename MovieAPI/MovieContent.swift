@@ -85,4 +85,19 @@ class MovieContent {
         await cache.new(genres: genres, for: movie)
         return genres
     }
+    
+    func productionCompanies(for movie: Movie) async throws -> [String]? {
+        if let cached = await cache.productionCompanies[movie] {
+            return cached
+        }
+        let response: Db2Handler.QueryResponse<MovieProductionCompanyLink> =
+            try await db2Handler.runSyncJob(service: "GetMovieProductionCompanies", version: "1.0",
+                                            parameters: ["movieId": movie.movieID])
+        guard let results = response.resultSet else {
+            return nil
+        }
+        let productionCompanies = results.map { $0.name }
+        await cache.new(genres: productionCompanies, for: movie)
+        return productionCompanies
+    }
 }
