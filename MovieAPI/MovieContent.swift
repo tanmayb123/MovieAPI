@@ -97,7 +97,7 @@ class MovieContent {
             return nil
         }
         let productionCompanies = results.map { $0.name }
-        await cache.new(genres: productionCompanies, for: movie)
+        await cache.new(productionCompanies: productionCompanies, for: movie)
         return productionCompanies
     }
 }
