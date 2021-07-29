@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01C081CF26AB090600AE84CE /* MovieLensRecommender.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 01C081CE26AB090600AE84CE /* MovieLensRecommender.mlmodel */; };
+		01C081D126AB0AED00AE84CE /* Recommender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C081D026AB0AED00AE84CE /* Recommender.swift */; };
 		01DF67C926A6756800A274AD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DF67C826A6756800A274AD /* main.swift */; };
 		01DF67D026A6757400A274AD /* Db2Handler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DF67CF26A6757400A274AD /* Db2Handler.swift */; };
 		01DF67D226A6761B00A274AD /* SSLTrustingURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DF67D126A6761B00A274AD /* SSLTrustingURLSession.swift */; };
@@ -31,6 +33,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		01C081CE26AB090600AE84CE /* MovieLensRecommender.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MovieLensRecommender.mlmodel; sourceTree = "<group>"; };
+		01C081D026AB0AED00AE84CE /* Recommender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recommender.swift; sourceTree = "<group>"; };
 		01DF67C526A6756800A274AD /* MovieAPI */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MovieAPI; sourceTree = BUILT_PRODUCTS_DIR; };
 		01DF67C826A6756800A274AD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		01DF67CF26A6757400A274AD /* Db2Handler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Db2Handler.swift; sourceTree = "<group>"; };
@@ -73,6 +77,7 @@
 		01DF67C726A6756800A274AD /* MovieAPI */ = {
 			isa = PBXGroup;
 			children = (
+				01C081CE26AB090600AE84CE /* MovieLensRecommender.mlmodel */,
 				01DF67DC26A6864A00A274AD /* ValueReference.swift */,
 				01DF67D526A6800600A274AD /* RoutesBuilder+Async.swift */,
 				01DF67DE26A6865B00A274AD /* WebSocket+Async.swift */,
@@ -80,6 +85,7 @@
 				01DF67CF26A6757400A274AD /* Db2Handler.swift */,
 				01DF67D326A6770E00A274AD /* Tables.swift */,
 				01DF67DA26A6827100A274AD /* MovieContent.swift */,
+				01C081D026AB0AED00AE84CE /* Recommender.swift */,
 				01DF67C826A6756800A274AD /* main.swift */,
 			);
 			path = MovieAPI;
@@ -151,6 +157,8 @@
 			files = (
 				01DF67DF26A6865B00A274AD /* WebSocket+Async.swift in Sources */,
 				01DF67D226A6761B00A274AD /* SSLTrustingURLSession.swift in Sources */,
+				01C081CF26AB090600AE84CE /* MovieLensRecommender.mlmodel in Sources */,
+				01C081D126AB0AED00AE84CE /* Recommender.swift in Sources */,
 				01DF67D626A6800600A274AD /* RoutesBuilder+Async.swift in Sources */,
 				01DF67DB26A6827100A274AD /* MovieContent.swift in Sources */,
 				01DF67C926A6756800A274AD /* main.swift in Sources */,

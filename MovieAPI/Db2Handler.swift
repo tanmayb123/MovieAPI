@@ -59,7 +59,7 @@ public class Db2Handler {
         deinit {
             if !stopped {
                 let request = stopRequest
-                async {
+                Task {
                     try? await Job.stopJob(stopRequest: request)
                 }
             }
@@ -133,7 +133,7 @@ public class Db2Handler {
                     return page
                 }
             } catch let error {
-                async {
+                Task {
                     try await stopJob()
                 }
                 throw error
@@ -158,7 +158,7 @@ public class Db2Handler {
     public init(authSettings: AuthSettings) throws {
         self.authSettings = authSettings
         let tokenSemaphore = DispatchSemaphore(value: 0)
-        async {
+        Task {
             do {
                 self.authToken = try await getDb2AuthToken()
             } catch let error {

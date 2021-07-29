@@ -40,6 +40,36 @@ extension RoutesBuilder {
     }
     
     @discardableResult
+    public func postAsync<Response>(
+        _ path: PathComponent...,
+        use closure: @escaping (Request) async throws -> Response
+    ) -> Route
+        where Response: ResponseEncodable
+    {
+        return self.on(.POST, path, use: { req -> Response in
+            let semaphore = DispatchSemaphore(value: 0)
+            let response: ValueReference<Response?> = .init(nil)
+            let error: ValueReference<Error?> = .init(nil)
+            Task {
+                defer { semaphore.signal() }
+                do {
+                    response.value = try await closure(req)
+                } catch let caughtError {
+                    error.value = caughtError
+                }
+            }
+            semaphore.wait()
+            if let error = error.value {
+                throw error
+            }
+            guard let response = response.value else {
+                fatalError()
+            }
+            return response
+        })
+    }
+    
+    @discardableResult
     public func webSocketAsync(
         _ path: PathComponent...,
         maxFrameSize: WebSocketMaxFrameSize = .`default`,

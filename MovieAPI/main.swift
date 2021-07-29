@@ -45,6 +45,11 @@ struct ProductionCompaniesResponse: Codable {
     var error: String?
 }
 
+struct RecommendationsResponse: Codable {
+    var recommendations: [Movie]
+    var error: String?
+}
+
 func registerVaporEndpoints(application: Application) {
     application.getAsync("register") { req async throws -> String in
         let handler: Db2Handler
@@ -158,6 +163,44 @@ func registerVaporEndpoints(application: Application) {
         
         return String(data: try JSONEncoder().encode(response), encoding: .utf8)!
     }
+    
+    application.postAsync("recommendations") { req async throws -> String in
+        let response = try await { () async throws -> RecommendationsResponse in
+            guard let sessionId = req.query[String.self, at: "session"] else {
+                return RecommendationsResponse(recommendations: [], error: "No session ID")
+            }
+            guard let session = await Sessions.shared.session(with: sessionId) else {
+                return RecommendationsResponse(recommendations: [], error: "Invalid session ID")
+            }
+            
+            guard let bodyString = req.body.string else {
+                return RecommendationsResponse(recommendations: [], error: "No body sent in request")
+            }
+            let json = try JSONDecoder().decode([[Int]].self, from: bodyString.data(using: .utf8)!)
+            var ratings: [Int64: Double] = [:]
+            for i in json {
+                ratings[Int64(i[0])] = Double(i[1])
+            }
+            
+            let recommendations = try await Recommender.shared.recommendations(for: ratings)
+            var movies: [Movie] = []
+            for i in recommendations {
+                do {
+                    guard let movie = try await session.movie(by: Int(i)) else {
+                        print("Movie with ID \(i) not found.")
+                        continue
+                    }
+                    movies.append(movie)
+                } catch let error {
+                    print("Couldn't get movie with ID \(i). Error: \(error)")
+                }
+            }
+            
+            return RecommendationsResponse(recommendations: movies, error: nil)
+        }()
+        
+        return String(data: try JSONEncoder().encode(response), encoding: .utf8)!
+    }
 }
 
 var env = try Environment.detect()
@@ -167,7 +210,7 @@ let app = Application(env)
 let corsConfiguration = CORSMiddleware.Configuration(
     allowedOrigin: .all,
     allowedMethods: [.POST, .GET, .PATCH, .PUT, .DELETE, .OPTIONS],
-    allowedHeaders: []
+    allowedHeaders: [.contentType]
 )
 let corsMiddleware = CORSMiddleware(configuration: corsConfiguration)
 app.middleware.use(corsMiddleware)
